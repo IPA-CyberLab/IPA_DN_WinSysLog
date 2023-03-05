@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SysLogApp", "SysLogApp\SysLogApp.csproj", "{73D3FC99-D6BE-4A36-9B72-8291C9D7CEF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SysLog", "SysLog\SysLog.csproj", "{70BDC5A4-83F2-4B1F-9D89-DEC49ACDE3CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SysLogSvc", "SysLogSvc\SysLogSvc.csproj", "{3E615B1B-F028-4474-8F34-280466A6D7BB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73D3FC99-D6BE-4A36-9B72-8291C9D7CEF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73D3FC99-D6BE-4A36-9B72-8291C9D7CEF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73D3FC99-D6BE-4A36-9B72-8291C9D7CEF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73D3FC99-D6BE-4A36-9B72-8291C9D7CEF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70BDC5A4-83F2-4B1F-9D89-DEC49ACDE3CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70BDC5A4-83F2-4B1F-9D89-DEC49ACDE3CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70BDC5A4-83F2-4B1F-9D89-DEC49ACDE3CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70BDC5A4-83F2-4B1F-9D89-DEC49ACDE3CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E615B1B-F028-4474-8F34-280466A6D7BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E615B1B-F028-4474-8F34-280466A6D7BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E615B1B-F028-4474-8F34-280466A6D7BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E615B1B-F028-4474-8F34-280466A6D7BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0C7D58B4-2BC4-4F25-B782-AC559B2FCE5F}
+	EndGlobalSection
+EndGlobal
