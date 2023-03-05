@@ -85,7 +85,7 @@ namespace CoreUtil
         readonly EventLogQuery log;
         public readonly string EventLogName;
 
-        public const int DefaultMaxEntries = 1000;
+        public const int DefaultMaxEntries = 100;
 
 
         public EventReader(string eventLogName)
