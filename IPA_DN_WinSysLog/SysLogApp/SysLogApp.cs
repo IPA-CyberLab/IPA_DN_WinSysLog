@@ -19,17 +19,19 @@ namespace SysLogApp
     {
         static void Main(string[] args)
         {
-            if (true)
+            if (false)
             {
-                EventReader r = new EventReader("System");
+                // デバッグ
+                EventReader r = new EventReader("Application");
 
-                var a = r.Poll(new EventReaderStatus { }, 1000);
+                var a = r.Poll(new EventReaderStatus(), 1000);
 
                 foreach (var e in a.Entries)
                 {
-                    if (e.Source.Equals("Microsoft-Windows-Kernel-General", StringComparison.OrdinalIgnoreCase) && e.EventID == 16)
+                    //if (e.Source.Equals("Microsoft-Windows-Kernel-General", StringComparison.OrdinalIgnoreCase) && e.EventID == 16)
+                    if (e.Message.IndexOf("Event_Raw_Text") != -1)
                     {
-                        Console.WriteLine(e.Message);
+                        Console.WriteLine($"{e.Index} {e.EventID} {e.TimeGenerated} {e.UserName} {e.Message}");
                     }
                 }
 

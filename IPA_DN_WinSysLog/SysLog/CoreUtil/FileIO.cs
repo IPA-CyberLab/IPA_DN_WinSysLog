@@ -25,11 +25,40 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Web.Mail;
+using System.Runtime.InteropServices;
 
 namespace CoreUtil
 {
-	// HamCore エントリ
-	internal class HamCoreEntry : IComparable
+    // from: https://stackoverflow.com/questions/31032834/set-file-compression-attribute
+    public static class FileTools
+    {
+        private const int FSCTL_SET_COMPRESSION = 0x9C040;
+        private const short COMPRESSION_FORMAT_DEFAULT = 1;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern int DeviceIoControl(
+            IntPtr hDevice,
+            int dwIoControlCode,
+            ref short lpInBuffer,
+            int nInBufferSize,
+            IntPtr lpOutBuffer,
+            int nOutBufferSize,
+            ref int lpBytesReturned,
+            IntPtr lpOverlapped);
+
+        public static bool EnableCompression(IntPtr handle)
+        {
+            int lpBytesReturned = 0;
+            short lpInBuffer = COMPRESSION_FORMAT_DEFAULT;
+
+            return DeviceIoControl(handle, FSCTL_SET_COMPRESSION,
+                ref lpInBuffer, sizeof(short), IntPtr.Zero, 0,
+                ref lpBytesReturned, IntPtr.Zero) != 0;
+        }
+    }
+
+    // HamCore エントリ
+    internal class HamCoreEntry : IComparable
 	{
 		public string FileName = "";
 		public uint Size = 0;
@@ -1425,7 +1454,7 @@ namespace CoreUtil
 			}
 		}
 
-		static IO fileCreateInner(string name)
+		static IO fileCreateInner(string name, bool setCompressionFlag = false)
 		{
 			IO o = new IO();
 
@@ -1434,7 +1463,17 @@ namespace CoreUtil
 			lock (o.lockObj)
 			{
 				o.p = File.Open(name2, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
-				o.name = name2;
+
+				if (setCompressionFlag)
+				{
+					try
+					{
+						FileTools.EnableCompression(o.p.SafeFileHandle.DangerousGetHandle());
+					}
+					catch { }
+				}
+
+                o.name = name2;
 				o.writeMode = true;
 			}
 
@@ -1442,14 +1481,14 @@ namespace CoreUtil
 		}
 
 		// ファイルを作成する
-		public static IO FileCreate(string name)
+		public static IO FileCreate(string name, bool setCompressionFlag = false)
 		{
 			name = InnerFilePath(name);
 
-			return fileCreateInner(name);
+			return fileCreateInner(name, setCompressionFlag);
 		}
 
-		static IO fileOpenInner(string name, bool writeMode, bool readLock)
+		static IO fileOpenInner(string name, bool writeMode, bool readLock, bool setCompressionFlag = false)
 		{
 			IO o = new IO();
 
@@ -1460,7 +1499,16 @@ namespace CoreUtil
 				o.p = File.Open(name2, FileMode.Open, (writeMode ? FileAccess.ReadWrite : FileAccess.Read),
 					(readLock ? FileShare.None : FileShare.Read));
 
-				o.name = name2;
+                if (setCompressionFlag)
+                {
+                    try
+                    {
+                        FileTools.EnableCompression(o.p.SafeFileHandle.DangerousGetHandle());
+                    }
+                    catch { }
+                }
+
+                o.name = name2;
 				o.writeMode = writeMode;
 			}
 
@@ -1468,15 +1516,7 @@ namespace CoreUtil
 		}
 
 		// ファイルを開く
-		public static IO FileOpen(string name)
-		{
-			return FileOpen(name, false);
-		}
-		public static IO FileOpen(string name, bool writeMode)
-		{
-			return FileOpen(name, writeMode, false);
-		}
-		public static IO FileOpen(string name, bool writeMode, bool readLock)
+		public static IO FileOpen(string name, bool writeMode = false, bool readLock = false, bool setCompressionFlag = false)
 		{
 			name = InnerFilePath(name);
 
@@ -1499,22 +1539,22 @@ namespace CoreUtil
 			}
 			else
 			{
-				return fileOpenInner(name, writeMode, readLock);
+				return fileOpenInner(name, writeMode, readLock, setCompressionFlag);
 			}
 		}
 
 		// ファイルを開くか作成する
-		public static IO FileCreateOrAppendOpen(string name)
+		public static IO FileCreateOrAppendOpen(string name, bool setCompressionFlag = false)
 		{
 			if (IsFileExists(name))
 			{
-				IO io = FileOpen(name, true);
+				IO io = FileOpen(name, true, setCompressionFlag: setCompressionFlag);
 				io.Seek(SeekOrigin.End, 0);
 				return io;
 			}
 			else
 			{
-				return FileCreate(name);
+				return FileCreate(name, setCompressionFlag);
 			}
 		}
 

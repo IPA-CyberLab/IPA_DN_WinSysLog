@@ -818,14 +818,13 @@ namespace SysLog
 
             Array.Reverse(ret.Entries);
 
-            foreach (EventLogEntry e in ret.Entries)
+            foreach (var e in ret.Entries)
             {
-                string msg = EventReader.GetEventLogMessage(e).Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", " / ");
                 string str = string.Format("{0}: EVENT_ID={1};Src={4};Index={2};Msg={3};User={5};",
                     e.TimeGenerated,
                     e.EventID,
                     e.Index,
-                    msg,
+                    e.Message.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", " / "),
                     e.Source,
                     e.UserName);
 

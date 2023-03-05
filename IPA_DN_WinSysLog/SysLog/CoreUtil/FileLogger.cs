@@ -100,7 +100,7 @@ namespace CoreUtil
 						}
 					}
 
-					fs = IO.FileCreateOrAppendOpen(filename);
+					fs = IO.FileCreateOrAppendOpen(filename, setCompressionFlag: true);
 				}
 
 				lastFileName = filename;
