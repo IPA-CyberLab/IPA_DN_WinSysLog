@@ -251,8 +251,10 @@ namespace CoreUtil
                     return ret;
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine(e.ToString());
+
                 EventReaderStatus retStatus = new EventReaderStatus();
                 retStatus.EventLogName = this.EventLogName;
                 retStatus.NumIndex = 0;
