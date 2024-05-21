@@ -959,18 +959,18 @@ namespace SysLog
                 {
                     string value = c[key].StrValue.Trim();
 
-                    bool onlyEndWith = false;
+                    bool single_OnlyEndWith = false;
 
                     if (value.EndsWith("$") && value.IndexOf("&&") == -1)
                     {
-                        onlyEndWith = true;
+                        single_OnlyEndWith = true;
                         value = value.Substring(0, value.Length - 1);
                     }
 
                     if (string.IsNullOrEmpty(value) == false)
                     {
                         // 単一
-                        if (onlyEndWith == false)
+                        if (single_OnlyEndWith == false)
                         {
                             // 普通の文字列
                             if (str2.IndexOf(value, StringComparison.OrdinalIgnoreCase) != -1)
@@ -1000,21 +1000,41 @@ namespace SysLog
                                 {
                                     string token2 = token.Trim();
 
-                                    int index = str2.IndexOf(token2, StringComparison.OrdinalIgnoreCase);
+                                    bool onlyEndWith = false;
 
-                                    if (index == -1)
+                                    if (token2.EndsWith("$"))
                                     {
-                                        flag = false;
+                                        onlyEndWith = true;
+                                        token2 = token2.Substring(0, token2.Length - 1);
+                                    }
+
+                                    if (onlyEndWith == false)
+                                    {
+                                        // 普通の文字列
+                                        int index = str2.IndexOf(token2, StringComparison.OrdinalIgnoreCase);
+
+                                        if (index == -1)
+                                        {
+                                            flag = false;
+                                        }
+                                        else
+                                        {
+                                            if (lastIndex > index)
+                                            {
+                                                // 順番がヘン
+                                                flag = false;
+                                            }
+
+                                            lastIndex = index;
+                                        }
                                     }
                                     else
                                     {
-                                        if (lastIndex > index)
+                                        // aaa$ のような末尾文字列
+                                        if (str2.Trim().EndsWith(token2.Trim(), StringComparison.OrdinalIgnoreCase))
                                         {
-                                            // 順番がヘン
                                             flag = false;
                                         }
-
-                                        lastIndex = index;
                                     }
                                 }
                                 if (flag)
