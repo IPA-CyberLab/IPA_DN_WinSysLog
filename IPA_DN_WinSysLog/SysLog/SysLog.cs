@@ -959,10 +959,30 @@ namespace SysLog
                 {
                     string value = c[key].StrValue.Trim();
 
-                    // 単一
-                    if (str2.IndexOf(value, StringComparison.OrdinalIgnoreCase) != -1)
+                    bool onlyEndWith = false;
+
+                    if (value.EndsWith("$") && value.IndexOf("&&") == -1)
                     {
-                        ignore = true;
+                        onlyEndWith = true;
+                        value = value.Substring(0, value.Length - 1);
+                    }
+
+                    // 単一
+                    if (onlyEndWith == false)
+                    {
+                        // 普通の文字列
+                        if (str2.IndexOf(value, StringComparison.OrdinalIgnoreCase) != -1)
+                        {
+                            ignore = true;
+                        }
+                    }
+                    else
+                    {
+                        // abc$ のように末尾が $ で終わる場合は、EndsWith で比較
+                        if (str2.Trim().EndsWith(value, StringComparison.OrdinalIgnoreCase))
+                        {
+                            ignore = true;
+                        }
                     }
 
                     if (value.IndexOf("&&") != -1)
@@ -973,13 +993,26 @@ namespace SysLog
                         if (tokens.Length >= 2)
                         {
                             bool flag = true;
+                            int lastIndex = -1;
                             foreach (string token in tokens)
                             {
                                 string token2 = token.Trim();
 
-                                if (str2.IndexOf(token2, StringComparison.OrdinalIgnoreCase) == -1)
+                                int index = str2.IndexOf(token2, StringComparison.OrdinalIgnoreCase);
+
+                                if (index == -1)
                                 {
                                     flag = false;
+                                }
+                                else
+                                {
+                                    if (lastIndex > index)
+                                    {
+                                        // 順番がヘン
+                                        flag = false;
+                                    }
+
+                                    lastIndex = index;
                                 }
                             }
                             if (flag)
