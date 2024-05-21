@@ -1031,9 +1031,12 @@ namespace SysLog
                                     else
                                     {
                                         // aaa$ のような末尾文字列
-                                        if (str2.Trim().EndsWith(token2.Trim(), StringComparison.OrdinalIgnoreCase))
+                                        if (string.IsNullOrEmpty(token2) == false)
                                         {
-                                            flag = false;
+                                            if (str2.Trim().EndsWith(token2.Trim(), StringComparison.OrdinalIgnoreCase) == false)
+                                            {
+                                                flag = false;
+                                            }
                                         }
                                     }
                                 }
