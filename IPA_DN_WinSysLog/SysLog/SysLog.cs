@@ -967,57 +967,60 @@ namespace SysLog
                         value = value.Substring(0, value.Length - 1);
                     }
 
-                    // 単一
-                    if (onlyEndWith == false)
+                    if (string.IsNullOrEmpty(value) == false)
                     {
-                        // 普通の文字列
-                        if (str2.IndexOf(value, StringComparison.OrdinalIgnoreCase) != -1)
+                        // 単一
+                        if (onlyEndWith == false)
                         {
-                            ignore = true;
-                        }
-                    }
-                    else
-                    {
-                        // abc$ のように末尾が $ で終わる場合は、EndsWith で比較
-                        if (str2.Trim().EndsWith(value, StringComparison.OrdinalIgnoreCase))
-                        {
-                            ignore = true;
-                        }
-                    }
-
-                    if (value.IndexOf("&&") != -1)
-                    {
-                        // 複数   AND 条件
-                        string[] sps = { "&&" };
-                        string[] tokens = value.Split(sps, StringSplitOptions.RemoveEmptyEntries);
-                        if (tokens.Length >= 2)
-                        {
-                            bool flag = true;
-                            int lastIndex = -1;
-                            foreach (string token in tokens)
-                            {
-                                string token2 = token.Trim();
-
-                                int index = str2.IndexOf(token2, StringComparison.OrdinalIgnoreCase);
-
-                                if (index == -1)
-                                {
-                                    flag = false;
-                                }
-                                else
-                                {
-                                    if (lastIndex > index)
-                                    {
-                                        // 順番がヘン
-                                        flag = false;
-                                    }
-
-                                    lastIndex = index;
-                                }
-                            }
-                            if (flag)
+                            // 普通の文字列
+                            if (str2.IndexOf(value, StringComparison.OrdinalIgnoreCase) != -1)
                             {
                                 ignore = true;
+                            }
+                        }
+                        else
+                        {
+                            // abc$ のように末尾が $ で終わる場合は、EndsWith で比較
+                            if (str2.Trim().EndsWith(value.Trim(), StringComparison.OrdinalIgnoreCase))
+                            {
+                                ignore = true;
+                            }
+                        }
+
+                        if (value.IndexOf("&&") != -1)
+                        {
+                            // 複数   AND 条件
+                            string[] sps = { "&&" };
+                            string[] tokens = value.Split(sps, StringSplitOptions.RemoveEmptyEntries);
+                            if (tokens.Length >= 2)
+                            {
+                                bool flag = true;
+                                int lastIndex = -1;
+                                foreach (string token in tokens)
+                                {
+                                    string token2 = token.Trim();
+
+                                    int index = str2.IndexOf(token2, StringComparison.OrdinalIgnoreCase);
+
+                                    if (index == -1)
+                                    {
+                                        flag = false;
+                                    }
+                                    else
+                                    {
+                                        if (lastIndex > index)
+                                        {
+                                            // 順番がヘン
+                                            flag = false;
+                                        }
+
+                                        lastIndex = index;
+                                    }
+                                }
+                                if (flag)
+                                {
+                                    ignore = true;
+                                }
                             }
                         }
                     }
